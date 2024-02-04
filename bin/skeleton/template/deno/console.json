@@ -1,0 +1,21 @@
+{
+    "entries": [
+        {
+            "source": "/deno.jsonc"
+        },
+        {
+            "source": "/deps.ts"
+        },
+        {
+            "source": "/README.md.art",
+            "dest": "/README.md"
+        },
+        {
+            "source": "/.vscode",
+            "dir": true
+        },
+        {
+            "source": "/.vscode/settings.json"
+        }
+    ]
+}

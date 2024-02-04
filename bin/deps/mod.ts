@@ -1,4 +1,7 @@
-function join(dir: string, path: string): string {
+function join(dir: string, path?: string): string {
+    if (path === undefined || path == '') {
+        return dir
+    }
     if (dir.endsWith('/')) {
         dir = dir.substring(0, dir.length - 1)
     }
@@ -57,8 +60,27 @@ export interface Package {
      * import ts path. example ("log/mod.ts")
      * @default ['mod.ts']
      */
-    mod?: Array<string>;
+    mod?: Array<string | Mod>;
 }
+export interface Mod {
+    /**
+     * import file name
+     */
+    name: string
+    /**
+     * import url path
+     */
+    url?: string
+    /**
+     * export types
+     */
+    exports?: string
+}
+const defaultNPMModes: Array<Mod> = [
+    {
+        name: 'mod.ts',
+    },
+]
 const defaultModes = [
     'mod.ts'
 ]
@@ -68,6 +90,9 @@ export class Deps {
         this.pkgs = pkgs
         const set = new Set<string>()
         for (const pkg of pkgs) {
+            if (pkg.url == '' || pkg.url.indexOf('"') >= 0 || pkg.url.indexOf("'") >= 0) {
+                throw new Error(`package url invalid: '${pkg.name} ${pkg.url}'`);
+            }
             if (!verifyName(pkg.name)) {
                 throw new Error(`package name invalid: '${pkg.name}'`);
             }
@@ -80,8 +105,10 @@ export class Deps {
                     throw new Error(`package mod not a array: ${pkg.name}`);
                 }
                 for (const mod of pkg.mod) {
-                    if (!verifyName(mod)) {
-                        throw new Error(`package mod invalid: '${pkg.name}' '${mod}'`);
+                    if (typeof mod === "string") {
+                        if (!verifyName(mod)) {
+                            throw new Error(`package mod invalid: '${pkg.name}' '${mod}'`);
+                        }
                     }
                 }
             }
@@ -94,24 +121,37 @@ export class Deps {
     update() {
         console.log(this.output)
         let path: string
-        let mods: Array<string>
+        let mods: Array<string | Mod>
         const strs = Array<string>()
+        let s: string
         for (const pkg of this.pkgs) {
             path = join(this.output, pkg.name)
+            console.log(`  '${pkg.name}' <=> '${pkg.url}'`)
+            if (!pkg.mod || pkg.mod.length == 0) {
+                if (pkg.url.startsWith("npm:")) {
+                    mods = defaultNPMModes
+                } else {
+                    mods = defaultModes
+                }
+            } else {
+                mods = pkg.mod
+            }
             Deno.mkdirSync(path, {
                 recursive: true,
                 mode: 0o775,
             })
-            console.log(`  '${pkg.name}' <=> '${pkg.url}'`)
-            mods = pkg.mod ?? defaultModes
-            if (mods.length == 0) {
-                mods = defaultModes
-            }
             for (const mod of mods) {
-                console.log(`     * '${mod}'`)
-                const s = `export * from "${join(pkg.url, mod)}"`
-                writeTextFileSync(join(path, mod), s)
-                strs.push(s)
+                if (typeof mod === "string") {
+                    console.log(`     * '${mod}'`)
+                    s = `export * from "${join(pkg.url, mod)}"`
+                    writeTextFileSync(join(path, mod), s)
+                    strs.push(s)
+                } else {
+                    console.log(`     * '${mod.name}'`)
+                    s = `export ${mod.exports ?? '*'} from "${join(pkg.url, mod.url)}"`
+                    writeTextFileSync(join(path, mod.name), s)
+                    strs.push(s)
+                }
             }
         }
         writeTextFileSync(join(this.output, 'deps.ts'), strs.join("\n"))

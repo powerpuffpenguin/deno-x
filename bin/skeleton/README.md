@@ -1,12 +1,9 @@
-# create
+# skeleton
 
-Every time you create deno project, you have to manually create a lot of files,
-which is very troublesome. Now you can execute the following command which will
-create a deno in the current path Project skeleton.
+This script is used to quickly create a project skeleton:
 
 ```
-deno run -A "https://github.com/powerpuffpenguin/deno-x/raw/main/bin/skeleton/main.ts" -t console
+deno run -A "https://github.com/powerpuffpenguin/deno-x/raw/main/bin/skeleton/main.ts" -h
 ```
 
-- The -t parameter specifies the skeleton code to be created
-- You can use the -h parameter to view more detailed instructions.
+- [deno](template/deno/README.md)

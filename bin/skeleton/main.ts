@@ -1,28 +1,10 @@
 import { Command, Parser } from '../../deps/flags/mod.ts';
-class Template {
-    render() {
-
-    }
-}
+import { denoCommand } from "./template/deno/deno.ts";
 const root = new Command({
     use: "main.ts",
-    short: "Create deno project skeleton",
-    prepare(flags) {
-        const template = flags.string({
-            name: "template",
-            short: "t",
-            default: "console",
-            usage: "skeleton code",
-            values: [
-                'console'
-            ]
-        });
-        return async () => {
-            const resp = await fetch(`${Deno.mainModule}/../template/console.json`)
-            const s = new TextDecoder().decode(await resp.arrayBuffer())
-            console.log(s)
-        };
-    },
+    short: "Create project skeleton",
 });
-
+root.add(
+    denoCommand,
+)
 new Parser(root).parse(Deno.args);
