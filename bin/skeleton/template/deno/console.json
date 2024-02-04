@@ -7,6 +7,37 @@
             "source": "/deps.ts"
         },
         {
+            "source": "/deps",
+            "dir": true
+        },
+        {
+            "source": "/deps/std",
+            "dir": true
+        },
+        {
+            "source": "/deps/std/assert",
+            "dir": true
+        },
+        {
+            "source": "/deps/std/assert/assert_equals.ts"
+        },
+        {
+            "source": "/deps/deps.ts"
+        },
+        {
+            "source": "/bin",
+            "dir": true
+        },
+        {
+            "source": "/bin/main.ts"
+        },
+        {
+            "source": "/bin/main_test.ts"
+        },
+        {
+            "source": "/.gitignore"
+        },
+        {
             "source": "/README.md.art",
             "dest": "/README.md"
         },
@@ -16,6 +47,13 @@
         },
         {
             "source": "/.vscode/settings.json"
+        },
+        {
+            "source": "/LICENSE.art",
+            "dest": "/LICENSE"
+        },
+        {
+            "source": "/deno.lock"
         }
     ]
 }

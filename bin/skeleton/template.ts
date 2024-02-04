@@ -26,7 +26,7 @@ export class Template {
     }
     constructor(readonly url: string, readonly meta: Meta, readonly opts: TemplateMode) { }
     async render(ctx: Record<string, any>): Promise<void> {
-        ctx['datetime'] = new Date().toUTCString()
+        ctx['years'] = new Date().getFullYear()
 
 
         const meta = this.meta

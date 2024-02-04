@@ -8,7 +8,7 @@ After switching the working path to the deno project root directory, execute the
 following command:
 
 ```
-deno run -A "https://github.com/powerpuffpenguin/deno-x/raw/main/bin/deps/main.ts"
+deno run -A "https://raw.githubusercontent.com/powerpuffpenguin/deno-x/main/bin/deps/main.ts"
 ```
 
 This will create a deps.ts file for managing project dependencies. You need to

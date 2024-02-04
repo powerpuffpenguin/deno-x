@@ -12,14 +12,20 @@ export const denoCommand = new Command({
             default: "console",
             usage: "skeleton code",
             values: [
-                'console'
+                'console',
             ]
         });
         const mode = flags.string({
             name: "mode",
             values: ["mutual", "cover", "skip", "error"],
             default: "skip",
-            usage: "What to do when the created archive already exists"
+            usage: "What to do when the created archive already exists",
+        })
+        const organization = flags.string({
+            name: "organization",
+            short: "O",
+            default: "-",
+            usage: "Organization or Company "
         })
         return async () => {
             (await Template.create(import.meta.url,
@@ -28,7 +34,7 @@ export const denoCommand = new Command({
                     mode: mode.value as any,
                 },
             )).render({
-
+                organization: organization.value,
             })
         };
     },
