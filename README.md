@@ -2,4 +2,4 @@
 
 deno lib
 
-- [deps](deps/README.md) Managing Dependencies
+- [deps](bin/deps/README.md) Managing Dependencies
