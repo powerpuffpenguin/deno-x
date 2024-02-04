@@ -55,9 +55,13 @@ export interface Package {
     url: string;
     /**
      * import ts path. example ("log/mod.ts")
+     * @default ['mod.ts']
      */
-    mod: Array<string>;
+    mod?: Array<string>;
 }
+const defaultModes = [
+    'mod.ts'
+]
 export class Deps {
     readonly pkgs: Array<Package>
     constructor(readonly output: string, ...pkgs: Array<Package>) {
@@ -71,9 +75,14 @@ export class Deps {
                 throw new Error(`package name repeat: '${pkg.name}'`);
             }
             set.add(pkg.name)
-            for (const mod of pkg.mod) {
-                if (!verifyName(mod)) {
-                    throw new Error(`package mod invalid: '${pkg.name}' '${pkg.mod}'`);
+            if (pkg.mod !== undefined) {
+                if (!Array.isArray(pkg.mod)) {
+                    throw new Error(`package mod not a array: ${pkg.name}`);
+                }
+                for (const mod of pkg.mod) {
+                    if (!verifyName(mod)) {
+                        throw new Error(`package mod invalid: '${pkg.name}' '${mod}'`);
+                    }
                 }
             }
         }
@@ -85,6 +94,8 @@ export class Deps {
     update() {
         console.log(this.output)
         let path: string
+        let mods: Array<string>
+        const strs = Array<string>()
         for (const pkg of this.pkgs) {
             path = join(this.output, pkg.name)
             Deno.mkdirSync(path, {
@@ -92,10 +103,17 @@ export class Deps {
                 mode: 0o775,
             })
             console.log(`  '${pkg.name}' <=> '${pkg.url}'`)
-            for (const mod of pkg.mod) {
+            mods = pkg.mod ?? defaultModes
+            if (mods.length == 0) {
+                mods = defaultModes
+            }
+            for (const mod of mods) {
                 console.log(`     * '${mod}'`)
-                writeTextFileSync(join(path, mod), `export * from "${join(pkg.url, mod)}"`)
+                const s = `export * from "${join(pkg.url, mod)}"`
+                writeTextFileSync(join(path, mod), s)
+                strs.push(s)
             }
         }
+        writeTextFileSync(join(this.output, 'deps.ts'), strs.join("\n"))
     }
 }

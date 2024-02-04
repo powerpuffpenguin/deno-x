@@ -12,6 +12,10 @@ const deps = new Deps(
             "assert/assert_equals.ts",
         ],
     },
+    {
+        url: 'https://deno.land/x/flags@0.0.3',
+        name: 'flags',
+    },
     // more packages ...
 )
 
