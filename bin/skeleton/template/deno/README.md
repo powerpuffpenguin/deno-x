@@ -2,7 +2,7 @@
 
 Every time you create deno project, you have to manually create a lot of files,
 which is very troublesome. Now you can execute the following command which will
-create a deno in the current path project skeleton.
+create a deno skeleton in the current path project.
 
 ```
 deno run -A "https://raw.githubusercontent.com/powerpuffpenguin/deno-x/main/bin/skeleton/main.ts" deno -h
